@@ -16,6 +16,7 @@ in
   # Import Program Configurations
   imports = [
     ../../config/emoji.nix
+    ../../config/fastfetch
     ../../config/hyprland.nix
     ../../config/neovim.nix
     ../../config/rofi/rofi.nix
@@ -206,7 +207,7 @@ in
         };
         background = [
           {
-            path = "/home/${username}/Pictures/Wallpapers/zaney-wallpaper.jpg";
+            path = "/home/${username}/Pictures/Wallpapers/background.jpg";
             blur_passes = 3;
             blur_size = 8;
           }

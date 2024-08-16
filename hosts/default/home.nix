@@ -207,7 +207,7 @@ in
         };
         background = [
           {
-            path = "/home/${username}/Pictures/Wallpapers/zaney-wallpaper.jpg";
+            path = "/home/${username}/Pictures/Wallpapers/background.jpg";
             blur_passes = 3;
             blur_size = 8;
           }

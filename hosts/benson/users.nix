@@ -23,8 +23,6 @@ in
       shell = pkgs.bash;
       ignoreShellProgramCheck = true;
       packages = with pkgs; [
-        webcord
-        zeroad
       ];
     };
     # "newuser" = {

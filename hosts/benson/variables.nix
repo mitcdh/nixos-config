@@ -1,12 +1,10 @@
 {
   # Git Configuration ( For Pulling Software Repos )
-  gitUsername = "Tyler Kelley";
-  gitEmail = "tylerzanekelley@gmail.com";
+  gitUsername = "Mitchell Hewes";
+  gitEmail = "me@mitcdh.com";
 
   # Hyprland Settings
-  extraMonitorSettings = "
-monitor=eDP-1,2560x1600@60,0x0,1.25
-    ";
+  extraMonitorSettings = "";
 
   # Waybar Settings
   clock24h = false;

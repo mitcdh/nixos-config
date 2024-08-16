@@ -4,7 +4,6 @@
   host,
   username,
   options,
-  lib,
   ...
 }:
 let
@@ -15,7 +14,6 @@ in
     ./hardware.nix
     ./users.nix
     ../../modules/amd-drivers.nix
-    ../../modules/apple-silicon-support
     ../../modules/nvidia-drivers.nix
     ../../modules/nvidia-prime-drivers.nix
     ../../modules/intel-drivers.nix
@@ -25,7 +23,7 @@ in
 
   boot = {
     # Kernel
-    kernelPackages = lib.mkDefault pkgs.linuxPackages_zen;
+    kernelPackages = pkgs.linuxPackages_zen;
     # This is for OBS Virtual Cam Support
     kernelModules = [ "v4l2loopback" ];
     extraModulePackages = [ config.boot.kernelPackages.v4l2loopback ];
@@ -56,25 +54,25 @@ in
   # Styling Options
   stylix = {
     enable = true;
-    image = ../../config/wallpapers/beautifulmountainscape.jpg;
-    # base16Scheme = {
-    #   base00 = "232136";
-    #   base01 = "2a273f";
-    #   base02 = "393552";
-    #   base03 = "6e6a86";
-    #   base04 = "908caa";
-    #   base05 = "e0def4";
-    #   base06 = "e0def4";
-    #   base07 = "56526e";
-    #   base08 = "eb6f92";
-    #   base09 = "f6c177";
-    #   base0A = "ea9a97";
-    #   base0B = "3e8fb0";
-    #   base0C = "9ccfd8";
-    #   base0D = "c4a7e7";
-    #   base0E = "f6c177";
-    #   base0F = "56526e";
-    # };
+    image = ../../config/wallpapers/background.jpg;
+    base16Scheme = {
+      base00 = "24273a"; # base
+      base01 = "1e2030"; # mantle
+      base02 = "363a4f"; # surface0
+      base03 = "494d64"; # surface1
+      base04 = "5b6078"; # surface2
+      base05 = "cad3f5"; # text
+      base06 = "f4dbd6"; # rosewater
+      base07 = "b7bdf8"; # lavender
+      base08 = "ed8796"; # red
+      base09 = "f5a97f"; # peach
+      base0A = "eed49f"; # yellow
+      base0B = "a6da95"; # green
+      base0C = "8bd5ca"; # teal
+      base0D = "8aadf4"; # blue
+      base0E = "c6a0f6"; # mauve
+      base0F = "f0c6c6"; # flamingo
+    };
     polarity = "dark";
     opacity.terminal = 0.8;
     cursor.package = pkgs.bibata-cursors;
@@ -104,43 +102,37 @@ in
 
   # Extra Module Options
   drivers.amdgpu.enable = false;
-  drivers.nvidia.enable = false;
+  drivers.nvidia.enable = true;
   drivers.nvidia-prime = {
-    enable = false;
-    intelBusID = "";
-    nvidiaBusID = "";
+    enable = true;
+    intelBusID = "PCI:0:2:0";
+    nvidiaBusID = "PCI:1:0:0";
   };
   drivers.intel.enable = false;
   vm.guest-services.enable = false;
   local.hardware-clock.enable = false;
-  # Apple Hardware
-  hardware.asahi.useExperimentalGPUDriver = true;
-  hardware.asahi.peripheralFirmwareDirectory = ../../modules/firmware;
 
   # Enable networking
-  networking.wireless.iwd = {
-    enable = true;
-    settings.General.EnableNetworkConfiguration = true;
-  };
+  networking.networkmanager.enable = true;
   networking.hostName = host;
   networking.timeServers = options.networking.timeServers.default ++ [ "pool.ntp.org" ];
 
   # Set your time zone.
-  time.timeZone = "America/Chicago";
+  time.timeZone = "Europe/Vienna";
 
   # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
+  i18n.defaultLocale = "en_AU.UTF-8";
 
   i18n.extraLocaleSettings = {
-    LC_ADDRESS = "en_US.UTF-8";
-    LC_IDENTIFICATION = "en_US.UTF-8";
-    LC_MEASUREMENT = "en_US.UTF-8";
-    LC_MONETARY = "en_US.UTF-8";
-    LC_NAME = "en_US.UTF-8";
-    LC_NUMERIC = "en_US.UTF-8";
-    LC_PAPER = "en_US.UTF-8";
-    LC_TELEPHONE = "en_US.UTF-8";
-    LC_TIME = "en_US.UTF-8";
+    LC_ADDRESS = "en_AU.UTF-8";
+    LC_IDENTIFICATION = "en_AU.UTF-8";
+    LC_MEASUREMENT = "en_AU.UTF-8";
+    LC_MONETARY = "en_AU.UTF-8";
+    LC_NAME = "en_AU.UTF-8";
+    LC_NUMERIC = "en_AU.UTF-8";
+    LC_PAPER = "en_AU.UTF-8";
+    LC_TELEPHONE = "en_AU.UTF-8";
+    LC_TIME = "en_AU.UTF-8";
   };
 
   programs = {
@@ -223,6 +215,12 @@ in
       enableSSHSupport = true;
     };
     virt-manager.enable = true;
+    steam = {
+      enable = false;
+      gamescopeSession.enable = true;
+      remotePlay.openFirewall = true;
+      dedicatedServer.openFirewall = true;
+    };
     thunar = {
       enable = true;
       plugins = with pkgs.xfce; [
@@ -274,11 +272,13 @@ in
     virt-viewer
     swappy
     appimage-run
+    networkmanagerapplet
     yad
     inxi
     playerctl
     nh
     nixfmt-rfc-style
+    discord
     libvirt
     swww
     grim
@@ -290,6 +290,7 @@ in
     gimp
     pavucontrol
     tree
+    spotify
     neovide
     greetd.tuigreet
   ];
@@ -404,8 +405,10 @@ in
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
   services.blueman.enable = true;
+
+  # Enable sound with pipewire.
   hardware.pulseaudio.enable = false;
-  
+
   # Security / Polkit
   security.rtkit.enable = true;
   security.polkit.enable = true;
@@ -460,7 +463,6 @@ in
   # OpenGL
   hardware.graphics = {
     enable = true;
-    enable32Bit = false;
   };
 
   console.keyMap = "${keyboardLayout}";
